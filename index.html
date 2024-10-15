@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,32 +6,32 @@
     <title>CV Interactif - Ledian Muja</title>
     <style>
         body {
-            background-color: #1d1f21;
-            color: #c5c8c6;
-            font-family: monospace;
+            background-color: black;
+            color: white;
+            font-family: "Consolas", monospace;
             padding: 20px;
         }
         #terminal {
             width: 80%;
             margin: 0 auto;
-            background-color: #282a2e;
+            background-color: black;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         #output {
             height: 300px;
             overflow-y: auto;
         }
         input {
-            background-color: #1d1f21;
-            color: #c5c8c6;
+            background-color: black;
+            color: white;
             border: none;
             outline: none;
             width: 100%;
+            font-family: "Consolas", monospace;
         }
         .command {
-            color: #81a2be;
+            color: #00ff00;
         }
     </style>
 </head>
@@ -40,8 +39,7 @@
 
     <div id="terminal">
         <div id="output">
-            <p>Bienvenue sur le CV interactif de Ledian Muja !</p>
-            <p>Entrez une commande pour continuer :</p>
+            <p id="welcome-message"></p>
             <p class="command">!cv - Afficher le CV</p>
             <p class="command">!motivation - Afficher la lettre de motivation</p>
             <p class="command">!contact - Afficher les coordonnées</p>
@@ -50,6 +48,24 @@
     </div>
 
     <script>
+        // Effet de texte progressif
+        function typeText(element, text, speed) {
+            let i = 0;
+            function typeWriter() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                }
+            }
+            typeWriter();
+        }
+
+        // Message de bienvenue qui s'écrit progressivement
+        const welcomeMessage = document.getElementById('welcome-message');
+        const welcomeText = "Bienvenue sur le CV interactif de Ledian Muja !\\nEntrez une commande pour continuer :";
+        typeText(welcomeMessage, welcomeText, 50); // 50ms par caractère
+
         const inputField = document.getElementById('input');
         const outputField = document.getElementById('output');
 
@@ -64,23 +80,19 @@
         function executeCommand(command) {
             let output = '';
             if (command === '!cv') {
-                output = "<p><strong>CV:</strong><br>Ledian Muja<br>Technicien en formation développement<br>...</p>";
+                output = "<p class='command'>> " + command + "</p><p>CV: Ledian Muja<br>Technicien en formation développement<br>...</p>";
             } else if (command === '!motivation') {
-                output = `<p><strong>Lettre de motivation:</strong><br>Madame, Monsieur,<br><br>
-                          Passionné par l'informatique et motivé à me lancer dans une carrière de développement, je vous écris afin de postuler 
-                          à une place d'apprentissage au sein de votre entreprise. Mon expérience technique acquise à Genève, couplée à mon 
-                          désir d'acquérir des compétences en développement web, me permet de m'adapter rapidement aux nouvelles technologies 
-                          et de contribuer activement à vos projets. <br><br>
-                          Je suis convaincu que cette opportunité me permettra de mettre en pratique mon apprentissage en codage tout en 
-                          renforçant mes compétences professionnelles. <br><br>
-                          Merci d'avoir pris le temps de lire ma candidature. Je suis disponible pour discuter plus en détails à votre convenance.<br><br>
-                          Ledian Muja</p>`;
+                output = "<p class='command'>> " + command + "</p><p>Madame, Monsieur,<br><br>Passionné par l'informatique et motivé à me lancer dans une carrière de développement, je vous écris afin de postuler à une place d'apprentissage au sein de votre entreprise. Mon expérience technique acquise à Genève, couplée à mon désir d'acquérir des compétences en développement web, me permet de m'adapter rapidement aux nouvelles technologies et de contribuer activement à vos projets. Merci d'avoir pris le temps de lire ma candidature. Je suis disponible pour discuter plus en détails à votre convenance.<br><br>Ledian Muja</p>";
             } else if (command === '!contact') {
-                output = "<p><strong>Coordonnées:</strong><br>Email: ledian.mu@gmail.com<br>Téléphone: +41 76 675 60 42<br>LinkedIn: <a href='https://www.linkedin.com/in/ledian-muja-74a079297/' target='_blank'>Ledian Muja</a></p>";
+                output = "<p class='command'>> " + command + "</p><p>Coordonnées:<br>Email: ledian.mu@gmail.com<br>Téléphone: +41 76 675 60 42<br>LinkedIn: <a href='https://www.linkedin.com/in/ledian-muja-74a079297/' target='_blank'>Ledian Muja</a></p>";
             } else {
-                output = "<p>Commande non reconnue. Essayez: !cv, !motivation, !contact</p>";
+                output = "<p class='command'>> " + command + "</p><p>Commande non reconnue. Essayez: !cv, !motivation, !contact</p>";
             }
-            outputField.innerHTML += `<p class="command">> ${command}</p>` + output;
+
+            // Ajout progressif de texte à l'output
+            const newOutput = document.createElement("div");
+            newOutput.innerHTML = output;
+            outputField.appendChild(newOutput);
             outputField.scrollTop = outputField.scrollHeight;
         }
     </script>
