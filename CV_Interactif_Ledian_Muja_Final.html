@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Interactif - Ledian Muja</title>
+    <style>
+        body {
+            background-color: #1d1f21;
+            color: #c5c8c6;
+            font-family: monospace;
+            padding: 20px;
+        }
+        #terminal {
+            width: 80%;
+            margin: 0 auto;
+            background-color: #282a2e;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #output {
+            height: 300px;
+            overflow-y: auto;
+        }
+        input {
+            background-color: #1d1f21;
+            color: #c5c8c6;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+        .command {
+            color: #81a2be;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal">
+        <div id="output">
+            <p>Bienvenue sur le CV interactif de Ledian Muja !</p>
+            <p>Entrez une commande pour continuer :</p>
+            <p class="command">!cv - Afficher le CV</p>
+            <p class="command">!motivation - Afficher la lettre de motivation</p>
+            <p class="command">!contact - Afficher les coordonnées</p>
+        </div>
+        <input type="text" id="input" placeholder="Tapez une commande...">
+    </div>
+
+    <script>
+        const inputField = document.getElementById('input');
+        const outputField = document.getElementById('output');
+
+        inputField.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const command = inputField.value.trim();
+                executeCommand(command);
+                inputField.value = '';
+            }
+        });
+
+        function executeCommand(command) {
+            let output = '';
+            if (command === '!cv') {
+                output = "<p><strong>CV:</strong><br>Ledian Muja<br>Technicien en formation développement<br>...</p>";
+            } else if (command === '!motivation') {
+                output = `<p><strong>Lettre de motivation:</strong><br>Madame, Monsieur,<br><br>
+                          Passionné par l'informatique et motivé à me lancer dans une carrière de développement, je vous écris afin de postuler 
+                          à une place d'apprentissage au sein de votre entreprise. Mon expérience technique acquise à Genève, couplée à mon 
+                          désir d'acquérir des compétences en développement web, me permet de m'adapter rapidement aux nouvelles technologies 
+                          et de contribuer activement à vos projets. <br><br>
+                          Je suis convaincu que cette opportunité me permettra de mettre en pratique mon apprentissage en codage tout en 
+                          renforçant mes compétences professionnelles. <br><br>
+                          Merci d'avoir pris le temps de lire ma candidature. Je suis disponible pour discuter plus en détails à votre convenance.<br><br>
+                          Ledian Muja</p>`;
+            } else if (command === '!contact') {
+                output = "<p><strong>Coordonnées:</strong><br>Email: ledian.mu@gmail.com<br>Téléphone: +41 76 675 60 42<br>LinkedIn: <a href='https://www.linkedin.com/in/ledian-muja-74a079297/' target='_blank'>Ledian Muja</a></p>";
+            } else {
+                output = "<p>Commande non reconnue. Essayez: !cv, !motivation, !contact</p>";
+            }
+            outputField.innerHTML += `<p class="command">> ${command}</p>` + output;
+            outputField.scrollTop = outputField.scrollHeight;
+        }
+    </script>
+
+</body>
+</html>
