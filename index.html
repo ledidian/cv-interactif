@@ -48,7 +48,7 @@
     </div>
 
     <script>
-        // Effet de texte progressif
+        // Fonction pour l'effet de texte progressif
         function typeText(element, text, speed) {
             let i = 0;
             function typeWriter() {
@@ -61,7 +61,7 @@
             typeWriter();
         }
 
-        // Message de bienvenue qui s'écrit progressivement
+        // Message de bienvenue progressif
         const welcomeMessage = document.getElementById('welcome-message');
         const welcomeText = "Bienvenue sur le CV interactif de Ledian Muja !\\nEntrez une commande pour continuer :";
         typeText(welcomeMessage, welcomeText, 50); // 50ms par caractère
@@ -80,19 +80,28 @@
         function executeCommand(command) {
             let output = '';
             if (command === '!cv') {
-                output = "<p class='command'>> " + command + "</p><p>CV: Ledian Muja<br>Technicien en formation développement<br>...</p>";
+                const cvText = "CV: Ledian Muja\\nNé le: 26 janvier 1998\\nDiplôme: CFC employé de commerce\\nTechnicien en formation développement\\n...";
+                output = "<p class='command'>> " + command + "</p><p id='cv'></p>";
+                outputField.innerHTML += output;
+                const cvElement = document.getElementById('cv');
+                typeText(cvElement, cvText, 50); // Texte progressif
             } else if (command === '!motivation') {
-                output = "<p class='command'>> " + command + "</p><p>Madame, Monsieur,<br><br>Passionné par l'informatique et motivé à me lancer dans une carrière de développement, je vous écris afin de postuler à une place d'apprentissage au sein de votre entreprise. Mon expérience technique acquise à Genève, couplée à mon désir d'acquérir des compétences en développement web, me permet de m'adapter rapidement aux nouvelles technologies et de contribuer activement à vos projets. Merci d'avoir pris le temps de lire ma candidature. Je suis disponible pour discuter plus en détails à votre convenance.<br><br>Ledian Muja</p>";
+                const motivationText = `Madame, Monsieur,\\n\\nJe vous écris pour vous soumettre ma candidature spontanée pour un poste au sein de votre entreprise. Titulaire d'un CFC employé de commerce, je suis passionné par l'informatique et en transition vers une carrière dans le développement web.\\n\\nQue ce soit pour une place d'apprentissage ou un poste plus permanent, je suis convaincu que mon sens de l'adaptation, mes compétences techniques et mon envie d'apprendre pourront être des atouts pour votre équipe.\\n\\nJe suis disponible pour un entretien à votre convenance et vous remercie pour votre considération.\\n\\nLedian Muja`;
+                output = "<p class='command'>> " + command + "</p><p id='motivation'></p>";
+                outputField.innerHTML += output;
+                const motivationElement = document.getElementById('motivation');
+                typeText(motivationElement, motivationText, 50); // Texte progressif
             } else if (command === '!contact') {
-                output = "<p class='command'>> " + command + "</p><p>Coordonnées:<br>Email: ledian.mu@gmail.com<br>Téléphone: +41 76 675 60 42<br>LinkedIn: <a href='https://www.linkedin.com/in/ledian-muja-74a079297/' target='_blank'>Ledian Muja</a></p>";
+                const contactText = "Coordonnées:\\nEmail: ledian.mj@gmail.com\\nTéléphone: +41 76 675 60 42\\nLinkedIn: https://www.linkedin.com/in/ledian-muja-74a079297/";
+                output = "<p class='command'>> " + command + "</p><p id='contact'></p>";
+                outputField.innerHTML += output;
+                const contactElement = document.getElementById('contact');
+                typeText(contactElement, contactText, 50); // Texte progressif
             } else {
                 output = "<p class='command'>> " + command + "</p><p>Commande non reconnue. Essayez: !cv, !motivation, !contact</p>";
+                outputField.innerHTML += output;
             }
 
-            // Ajout progressif de texte à l'output
-            const newOutput = document.createElement("div");
-            newOutput.innerHTML = output;
-            outputField.appendChild(newOutput);
             outputField.scrollTop = outputField.scrollHeight;
         }
     </script>
