@@ -11,17 +11,20 @@
             font-family: "Consolas", monospace;
             padding: 20px;
         }
+
         #terminal {
-            width: 80%;
+            width: 90%;
             margin: 0 auto;
             background-color: black;
             padding: 15px;
             border-radius: 8px;
         }
+
         #output {
-            height: 300px;
+            height: 800px; /* Augmenté pour éviter de scroller */
             overflow-y: auto;
         }
+
         input {
             background-color: black;
             color: white;
@@ -30,6 +33,7 @@
             width: 100%;
             font-family: "Consolas", monospace;
         }
+
         .command {
             color: #00ff00;
         }
@@ -48,23 +52,50 @@
     </div>
 
     <script>
-        // Fonction pour l'effet de texte progressif
-        function typeText(element, text, speed) {
+        let typingInProgress = false; // Permettre plusieurs commandes
+
+        // Efface le texte précédent associé à une commande
+        function clearPreviousOutput(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.remove();
+            }
+        }
+
+        // Fonction pour l'effet de texte lettre par lettre avec balises HTML
+        function typeTextLetterByLetterHTML(element, htmlText, speed, callback = null) {
             let i = 0;
             function typeWriter() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i) === '\\n' ? '<br>' : text.charAt(i);
+                if (i < htmlText.length) {
+                    element.innerHTML = htmlText.substring(0, i + 1);
                     i++;
                     setTimeout(typeWriter, speed);
+                } else if (callback) {
+                    callback();
                 }
             }
             typeWriter();
         }
 
-        // Message de bienvenue progressif avec vitesse normale
+        // Fonction pour l'effet de texte progressif ligne par ligne
+        function typeText(element, lines, speed, callback = null) {
+            let i = 0;
+            function typeWriter() {
+                if (i < lines.length) {
+                    element.innerHTML += lines[i] + "<br>";
+                    i++;
+                    setTimeout(typeWriter, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            typeWriter();
+        }
+
+        // Message de bienvenue progressif
         const welcomeMessage = document.getElementById('welcome-message');
-        const welcomeText = "Bienvenue sur le CV interactif de Ledian Muja !\\nEntrez une commande pour continuer :";
-        typeText(welcomeMessage, welcomeText, 50); // 50ms par caractère
+        const welcomeText = ["Bienvenue sur le CV interactif de Ledian Muja !", "Entrez une commande pour continuer :"];
+        typeText(welcomeMessage, welcomeText, 500); // 500ms entre chaque ligne
 
         const inputField = document.getElementById('input');
         const outputField = document.getElementById('output');
@@ -72,34 +103,80 @@
         inputField.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 const command = inputField.value.trim();
-                executeCommand(command);
                 inputField.value = '';
+                executeCommand(command);
             }
         });
 
         function executeCommand(command) {
+            if (typingInProgress) return; // Bloquer si un texte est en cours
+            typingInProgress = true;
+
             let output = '';
             if (command === '!cv') {
-                const cvText = "CV: Ledian Muja\\nNé le: 26 janvier 1998\\nDiplôme: CFC employé de commerce\\nTechnicien en formation développement\\n...";
+                clearPreviousOutput('cv'); // Efface le texte précédent
+                const cvHTML = `
+                    <strong>CV:</strong><br>
+                    <strong>Nom:</strong> Ledian Muja<br>
+                    <strong>Date de naissance:</strong> 26 janvier 1998<br>
+                    <strong>Lieu:</strong> Genève, Suisse<br><br>
+                    <strong>Formation:</strong><br>
+                    - Diplômé d'un CFC employé de commerce (École de Commerce Aimée-Stitelmann, 2014-2018)<br><br>
+                    <strong>Expérience professionnelle:</strong><br>
+                    - Technicien chez Satiscan (2021-2024):<br>
+                    • Gestion et installation de compteurs de personnes<br>
+                    • Préparation de rapports techniques<br>
+                    • Support client<br>
+                    - Technicien de surface chez FB Services SA (2020-2022)<br><br>
+                    <strong>Compétences:</strong><br>
+                    - Langages: Python (bases), HTML, CSS<br>
+                    - Outils: Git, Docker, VirtualBox<br>
+                    - Bilingue français et albanais, niveau B1 en anglais<br><br>
+                    <strong>Projets:</strong><br>
+                    - CV interactif en ligne pour postuler à des postes en informatique<br><br>
+                    <strong>Centres d'intérêt:</strong><br>
+                    - Développement web<br>
+                    - Jeux vidéo<br>
+                    - Nouvelles technologies
+                `;
                 output = "<p class='command'>> " + command + "</p><p id='cv'></p>";
                 outputField.innerHTML += output;
                 const cvElement = document.getElementById('cv');
-                typeText(cvElement, cvText, 50); // Vitesse normale
+                typeTextLetterByLetterHTML(cvElement, cvHTML, 5, () => (typingInProgress = false)); // Texte plus rapide lettre par lettre
             } else if (command === '!motivation') {
-                const motivationText = `Madame, Monsieur,\\n\\nJe vous écris pour vous soumettre ma candidature spontanée pour un poste au sein de votre entreprise. Titulaire d'un CFC employé de commerce, je suis passionné par l'informatique et en transition vers une carrière dans le développement web.\\n\\nQue ce soit pour une place d'apprentissage ou un poste plus permanent, je suis convaincu que mon sens de l'adaptation, mes compétences techniques et mon envie d'apprendre pourront être des atouts pour votre équipe.\\n\\nJe suis disponible pour un entretien à votre convenance et vous remercie pour votre considération.\\n\\nLedian Muja`;
+                clearPreviousOutput('motivation'); // Efface le texte précédent
+                const motivationText = [
+                    "Madame, Monsieur,",
+                    "",
+                    "Je vous écris pour vous soumettre ma candidature spontanée pour un poste au sein de votre entreprise.",
+                    "Titulaire d'un CFC employé de commerce, je suis passionné par l'informatique et en transition vers une carrière dans le développement web.",
+                    "",
+                    "Que ce soit pour une place d'apprentissage ou un poste plus permanent, je suis convaincu que mon sens de l'adaptation, mes compétences techniques et mon envie d'apprendre pourront être des atouts pour votre équipe.",
+                    "",
+                    "Je suis disponible pour un entretien à votre convenance et vous remercie pour votre considération.",
+                    "",
+                    "Ledian Muja"
+                ];
                 output = "<p class='command'>> " + command + "</p><p id='motivation'></p>";
                 outputField.innerHTML += output;
                 const motivationElement = document.getElementById('motivation');
-                typeText(motivationElement, motivationText, 25); // Texte plus rapide
+                typeText(motivationElement, motivationText, 150, () => (typingInProgress = false)); // Texte plus lent pour !motivation
             } else if (command === '!contact') {
-                const contactText = "Coordonnées:\\nEmail: ledian.mj@gmail.com\\nTéléphone: +41 76 675 60 42\\nLinkedIn: https://www.linkedin.com/in/ledian-muja-74a079297/";
+                clearPreviousOutput('contact'); // Efface le texte précédent
+                const contactText = [
+                    "<strong>Coordonnées:</strong>",
+                    "Email: ledian.mj@gmail.com",
+                    "Téléphone: +41 76 675 60 42",
+                    "LinkedIn: <a href='https://www.linkedin.com/in/ledian-muja-74a079297/' target='_blank'>Ledian Muja</a>"
+                ];
                 output = "<p class='command'>> " + command + "</p><p id='contact'></p>";
                 outputField.innerHTML += output;
                 const contactElement = document.getElementById('contact');
-                typeText(contactElement, contactText, 50); // Vitesse normale
+                typeText(contactElement, contactText, 150, () => (typingInProgress = false)); // Texte plus lent pour !contact
             } else {
                 output = "<p class='command'>> " + command + "</p><p>Commande non reconnue. Essayez: !cv, !motivation, !contact</p>";
                 outputField.innerHTML += output;
+                typingInProgress = false;
             }
 
             outputField.scrollTop = outputField.scrollHeight;
